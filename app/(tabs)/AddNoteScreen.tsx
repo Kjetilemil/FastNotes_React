@@ -1,14 +1,16 @@
 import { NotesContext } from "@/context/NotesContext";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useContext } from "react";
-import { Button, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useContext, useState } from "react";
+import { Alert, Button, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from "react-native";
+
 
 export default function AddNoteScreen() {
-    const [title, setTitle] = React.useState<string>("");
-    const [content, setContent] = React.useState<string>("");
+    const [title, setTitle] = useState<string>("");
+    const [content, setContent] = useState<string>("");
     const router = useRouter();
     const notesContext = useContext(NotesContext);
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -29,10 +31,13 @@ export default function AddNoteScreen() {
         </View>
         <StatusBar style="auto" />
         <View style={styles.buttonPlacementStyle}>
-          <Button title="Save Note" onPress={() => {
-            if (notesContext) {
-              notesContext.addNote({title, content});
+          <Button title="Save Note" onPress={async () => {
+            if (!title.trim() || !content.trim()) {
+              Alert.alert("Error", "Both title and content are required.");
+              return;
             }
+            await notesContext?.addNote(title.trim(), content.trim());
+              Alert.alert("Saved", "Note saved.");
             router.push("/");
           }} />
         </View>

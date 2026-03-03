@@ -1,45 +1,58 @@
-import { NotesContext } from "@/context/NotesContext";
+import { Note, NotesContext } from "@/context/NotesContext";
+import { supabase } from "@/lib/supabase";
+import { useFocusEffect } from '@react-navigation/native';
 import { router, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useContext } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-type Note = {
-  title: string;
-  content: string;
-};
-
 
 type NoteProps = {
   note: Note;
-  index: number;
 };
 
-const NoteItem = (props: NoteProps) => {
+const NoteItem = ({ note }: NoteProps) => {
   return (
-    <TouchableOpacity onPress={() => router.push(`/(tabs)/ViewNoteScreen?index=${props.index}`)}>
-      <Text style={styles.noteStyle}>{props.note.title}</Text>
+    <TouchableOpacity onPress={() => router.push(`/(tabs)/ViewNoteScreen?id=${note.id}`)}>
+      <Text style={styles.noteStyle}>{note.title}</Text>
     </TouchableOpacity>
   );
 };
 
 
-
 export default function App() {
   const router = useRouter();
   const notesContext = useContext(NotesContext);
-  const notesArray = notesContext ? notesContext.notes : [];
+
+  useFocusEffect(
+    React.useCallback(() => {
+      notesContext?.getNote();
+    }, [notesContext])
+  );
+
+  if (!notesContext) return null;
+
+  const { notes } = notesContext;
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    router.replace("/(tabs)/authenticate");
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.headerStyle}>FastNotes</Text>
+      <Text style={styles.headerStyle}>Jobb Notater</Text>
       <View>
-      {notesArray.map((note, index) => (
-        <NoteItem key={index} note={note} index={index} />
-      ))}
+        {notes.map((note) => (
+          <NoteItem key={note.id} note={note} />
+        ))}
       </View>
       <StatusBar style="auto" />
       <View style={styles.buttonPlacementStyle}>
         <Button title="Add Note" onPress={() => router.push("/AddNoteScreen")} />
+      </View>
+      <View style={styles.logoutPlacementStyle}>
+        <Button title="Log Out" onPress={logout} />
       </View>
     </View>
   );
@@ -70,5 +83,9 @@ const styles = StyleSheet.create({
   buttonPlacementStyle: {
     position: "absolute",
     marginTop: 600,
+  },
+  logoutPlacementStyle: {
+    position: "absolute",
+    marginTop: 650,
   },
 });
