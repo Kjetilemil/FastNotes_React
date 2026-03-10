@@ -9,13 +9,14 @@ export type Note = {
   title: string; // title of the note
   content: string; // content of the note
   updatedat: string; // timestamp of the last update
+  image_url?: string; // optional image URL
 };
 
 
 type NotesContextType = {
   notes: Note[]; // array of notes
   getNote: () => Promise<void>; // function to fetch notes from the database
-  addNote: (title: string, content: string) => Promise<void>; // function to add a new note to the database
+  addNote: (title: string, content: string, imageUrl?: string) => Promise<void>; // function to add a new note to the database
   updateNote: (id: string, title: string, content: string) => Promise<void>; // function to update an existing note in the database
   deleteNote: (id: string) => Promise<void>; // function to delete a note from the database
 };
@@ -51,14 +52,14 @@ export const NotesProvider = ({ children }: { children: ReactNode }) => {
 
 
     // function to add a new note to the database and refresh the notes list
-    const addNote = async (title: string, content: string) => {
+    const addNote = async (title: string, content: string, imageUrl?: string) => {
     const { data: userData } = await supabase.auth.getUser();
     const userid = userData?.user?.id;
       if (!userid) {
         alert("You are not logged in or your email is not verified. Note will not be saved.");
         return;
       }
-      const { error } = await supabase.from('notes').insert({ title, content, userid, updatedat: new Date().toISOString() });
+      const { error } = await supabase.from('notes').insert({ title, content, userid, updatedat: new Date().toISOString(), image_url: imageUrl });
       if (error) {
         alert("Error saving note: " + error.message);
         return;

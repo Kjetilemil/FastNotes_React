@@ -25,8 +25,6 @@ export default function TabLayout() {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
         router.replace("/(tabs)/authenticate");
-      } else {
-        router.replace("/(tabs)");
       }
     });
 
@@ -39,11 +37,12 @@ export default function TabLayout() {
   return (
     <Tabs
       initialRouteName="authenticate"
-      screenOptions={{
+      screenOptions={({ route }) => ({
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
         tabBarButton: HapticTab,
-      }}
+        tabBarStyle: route.name === "authenticate" ? { display: "none" } : {},
+      })}
     >
       <Tabs.Screen
         name="index"
@@ -60,9 +59,11 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="ViewNoteScreen"
-        options={{
-          href: null,
-        }}
+        // ...existing code...
+      />
+      <Tabs.Screen
+        name="AddNoteScreen"
+        // ...existing code...
       />
     </Tabs>
   );

@@ -7,9 +7,12 @@
     "icon": "./assets/images/icon.png",
     "scheme": "fastenotesreact",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kjeti.fastnotes",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Images are used for fact attachments"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -18,8 +21,14 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.kjeti.fastnotes",
+      "permissions": [
+        "CAMERA",
+        "NOTIFICATIONS",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static",
@@ -27,6 +36,8 @@
     },
     "plugins": [
       "expo-router",
+      "expo-camera",
+      "expo-notifications",
       [
         "expo-splash-screen",
         {
@@ -40,11 +51,30 @@
         }
       ],
       "expo-sqlite",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Images are used for fact attachments"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#ffffff"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d47bf2c5-b993-47b1-a93a-15996932aee1"
+      }
     }
   }
 }

@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { router, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useContext } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
 type NoteProps = {
@@ -13,7 +13,10 @@ type NoteProps = {
 
 const NoteItem = ({ note }: NoteProps) => {
   return (
-    <TouchableOpacity onPress={() => router.push(`/(tabs)/ViewNoteScreen?id=${note.id}`)}>
+    <TouchableOpacity onPress={() => router.push(`/(tabs)/ViewNoteScreen?id=${note.id}`)} style={styles.noteItem}>
+      {note.image_url && (
+        <Image source={{ uri: note.image_url }} style={styles.noteImage} />
+      )}
       <Text style={styles.noteStyle}>{note.title}</Text>
     </TouchableOpacity>
   );
@@ -41,19 +44,21 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerStyle}>Jobb Notater</Text>
-      <View>
-        {notes.map((note) => (
-          <NoteItem key={note.id} note={note} />
-        ))}
-      </View>
-      <StatusBar style="auto" />
-      <View style={styles.buttonPlacementStyle}>
-        <Button title="Add Note" onPress={() => router.push("/AddNoteScreen")} />
-      </View>
-      <View style={styles.logoutPlacementStyle}>
-        <Button title="Log Out" onPress={logout} />
-      </View>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.headerStyle}>Jobb Notater</Text>
+        <View>
+          {notes.map((note) => (
+            <NoteItem key={note.id} note={note} />
+          ))}
+        </View>
+        <StatusBar style="auto" />
+        <View style={styles.buttonPlacementStyle}>
+          <Button title="Add Note" onPress={() => router.push("/AddNoteScreen")} />
+        </View>
+        <View style={styles.logoutPlacementStyle}>
+          <Button title="Log Out" onPress={logout} />
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -62,8 +67,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  scrollContent: {
     alignItems: "center",
     justifyContent: "flex-start",
+    paddingBottom: 50,
   },
   headerStyle: {
     fontSize: 30,
@@ -71,21 +79,28 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 200,
   },
-  noteStyle: {
-    fontSize: 20,
-    marginTop: 10,
+  noteItem: {
     backgroundColor: "#f0f0f0",
     padding: 10,
     width: 300,
-    textAlign: "center",
     borderRadius: 15,
+    marginTop: 10,
+  },
+  noteImage: {
+    width: 280,
+    height: 100,
+    borderRadius: 10,
+    marginBottom: 5,
+  },
+  noteStyle: {
+    fontSize: 20,
+    textAlign: "center",
   },
   buttonPlacementStyle: {
-    position: "absolute",
-    marginTop: 600,
+    marginTop: 30,
   },
   logoutPlacementStyle: {
-    position: "absolute",
-    marginTop: 650,
+    marginTop: 10,
+    marginBottom: 20,
   },
 });

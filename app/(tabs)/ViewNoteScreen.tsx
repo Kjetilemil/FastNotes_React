@@ -1,7 +1,7 @@
 import { NotesContext } from "@/context/NotesContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 
 export default function ViewNoteScreen() {
@@ -71,26 +71,34 @@ export default function ViewNoteScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerStyle}>View Selected Note</Text>
-      <View style={styles.inputBackgroundStyle}>
-        <TextInput
-          style={styles.notetitlestyle}
-          value={title}
-          onChangeText={setTitle}
-          placeholder="Title"
-        />
-        <TextInput
-          style={styles.notecontentstyle}
-          value={content}
-          onChangeText={setContent}
-          placeholder="Content"
-          multiline
-        />
-      </View>
-      <View style={styles.actions}>
-        <Button title="Save" onPress={save} />
-        <Button title="Delete" color="red" onPress={deleteNote} />
-      </View>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.headerStyle}>View Selected Note</Text>
+        {note.image_url && (
+          <Image 
+            source={{ uri: note.image_url }} 
+            style={styles.imageStyle}
+          />
+        )}
+        <View style={styles.inputBackgroundStyle}>
+          <TextInput
+            style={styles.notetitlestyle}
+            value={title}
+            onChangeText={setTitle}
+            placeholder="Title"
+          />
+          <TextInput
+            style={styles.notecontentstyle}
+            value={content}
+            onChangeText={setContent}
+            placeholder="Content"
+            multiline
+          />
+        </View>
+        <View style={styles.actions}>
+          <Button title="Save" onPress={save} />
+          <Button title="Delete" color="red" onPress={deleteNote} />
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -100,8 +108,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  scrollContent: {
     alignItems: "center",
     justifyContent: "flex-start",
+    paddingBottom: 50,
   },
   headerStyle: {
     fontSize: 30,
@@ -131,5 +142,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 16,
     marginTop: 16,
+  },
+  imageStyle: {
+    width: 300,
+    height: 300,
+    borderRadius: 10,
+    marginBottom: 10,
   },
 });
