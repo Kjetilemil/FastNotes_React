@@ -10,6 +10,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Button, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
+
 function Camera({ onPhotoTaken }: { onPhotoTaken: (uri: string) => void }) {
   const cameraRef = useRef<CameraView>(null);
 
@@ -30,7 +31,9 @@ function Camera({ onPhotoTaken }: { onPhotoTaken: (uri: string) => void }) {
     </CameraView>
   );
 }
-// Registrer Expo push token når AddNoteScreen rendres
+
+
+// for register push token for the user when they open the AddNoteScreen
 useEffect(() => {
   async function registerPushToken() {
     const expoPushToken = await Notifications.getExpoPushTokenAsync();
@@ -44,7 +47,7 @@ useEffect(() => {
   registerPushToken();
 }, []);
 
-
+// for handling notifications
 export default function AddNoteScreen() {
     const [title, setTitle] = useState<string>("");
     const [content, setContent] = useState<string>("");
@@ -56,28 +59,28 @@ export default function AddNoteScreen() {
     const [showCamera, setShowCamera] = useState<boolean>(false);
     const [saving, setSaving] = useState(false);
 
-    // Funksjon for å laste opp bilde til Supabase Storage
+    // function to upload image to supabase storage and return the public URL
     const uploadImageToSupabase = async (uri: string): Promise<string | null> => {
       try {
-        // Hent brukerdata for å lage unikt filnavn
+        // get user ID for unique file naming
         const { data: userData } = await supabase.auth.getUser();
         const userId = userData?.user?.id;
         if (!userId) return null;
 
-        // Generer unikt filnavn
+        // Generate unique file name
         const timestamp = Date.now();
         const random = Math.random().toString(36).substring(7);
         const extension = uri.split('.').pop()?.toLowerCase() || 'jpg';
         const fileName = `${userId}_${timestamp}_${random}.${extension}`;
 
-        // Bruk fetch for å lese filen som ArrayBuffer
+        // Use fetch to read the file as an ArrayBuffer
         const response = await fetch(uri);
         const arrayBuffer = await response.arrayBuffer();
 
-        // Riktig MIME type (jpg → jpeg)
+        // Correct MIME type (jpg → jpeg)
         const mimeType = extension === 'jpg' ? 'image/jpeg' : `image/${extension}`;
 
-        // Last opp til Supabase Storage
+        // Upload to Supabase Storage
         const { data, error } = await supabase.storage
           .from('note images')
           .upload(fileName, arrayBuffer, {
@@ -90,7 +93,7 @@ export default function AddNoteScreen() {
           return null;
         }
 
-        // Hent public URL
+        // Get public URL
         const { data: { publicUrl } } = supabase.storage
           .from('note images')
           .getPublicUrl(fileName);
@@ -111,13 +114,13 @@ export default function AddNoteScreen() {
         return false;
       }
       
-      // Sjekk størrelse: 15MB = 15 * 1024 * 1024 bytes
+      // check size 15MB 
       if (fileInfo.size && fileInfo.size > 15 * 1024 * 1024) {
         Alert.alert("Error", "File too large. Max 15MB");
         return false;
       }
       
-      // Sjekk format basert på filendelse
+      // check format based on file extension
       const extension = uri.split('.').pop()?.toLowerCase();
       const validExtensions = ['jpg', 'jpeg', 'png', 'webp'];
       if (!extension || !validExtensions.includes(extension)) {
@@ -128,12 +131,12 @@ export default function AddNoteScreen() {
       return true;
     };
 
-    // Be om kamera-tillatelse når komponenten lastes
+    // for allowing user to take picture with camera
     const takePicture = () => {
       setShowCamera(true);
     };
 
-    // Håndter resultatet av kamera-tillatelse
+    // Handle the result of camera permission
     const handlePhotoTaken = async (uri: string) => {
       if (await imageValidation(uri)) {
         setImage(uri);
@@ -152,12 +155,12 @@ export default function AddNoteScreen() {
       }
     };
 
-    // Hvis vi ikke har tillatelse, be om det
+    // If we don't have permission, request it
     if (!cameraPermission || !mediaPermission) {
       return <View />
     }
     
-    // Hvis tillatelse er nektet, vis en melding og en knapp for å be om tillatelse
+    // If permission is denied, show a message and a button to request permission
     if (!cameraPermission.granted || !mediaPermission.granted) { 
       return (
         <View style={styles.container}>
@@ -172,6 +175,7 @@ export default function AddNoteScreen() {
       );
     }
 
+    
   return (
     <View style={{ flex: 1 }}>
       {showCamera ? (
@@ -231,14 +235,24 @@ export default function AddNoteScreen() {
 
                 setSaving(true);
 
-                // Last opp bilde hvis det finnes
+                // Upload image if it exists
                 let imageUrl: string | undefined = undefined;
                 if (image) {
                   imageUrl = await uploadImageToSupabase(image) || undefined;
                 }
 
-                // Lagre notat med image URL
+                // Save note with image URL
                 await notesContext?.addNote(title.trim(), content.trim(), imageUrl);
+
+                // Send local push notification (oppgavekrav)
+                await Notifications.scheduleNotificationAsync({
+                  content: {
+                    title: `Nytt notat: ${title.trim()}`,
+                    body: content.trim(),
+                  },
+                  trigger: null,
+                });
+
                 setSaving(false);
                 Alert.alert("Saved", "Note saved.");
                 router.push("/");
@@ -253,10 +267,14 @@ export default function AddNoteScreen() {
 
 
 
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
   },
   scrollContent: {
     alignItems: "center",
