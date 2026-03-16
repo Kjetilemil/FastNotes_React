@@ -15,11 +15,9 @@ export const unstable_settings = {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
-  // Notification permissions: Follows Expo Notifications documentation
-  // https://docs.expo.dev/versions/latest/sdk/notifications/#requestpermissionsasync
+
   useEffect(() => {
     async function requestNotificationPermissions() {
-      // Android requires notification channel before permission prompt
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('default', {
           name: 'Default',
@@ -36,7 +34,7 @@ export default function RootLayout() {
       }
       
       if (finalStatus !== 'granted') {
-        console.log('Notification permission not granted');
+        // console.log('Notification permission not granted');
       }
     }
     

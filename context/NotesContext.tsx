@@ -35,16 +35,17 @@ export const NotesProvider = ({ children }: { children: ReactNode }) => {
   const getNote = async () => {
     const { data: sessionData } = await supabase.auth.getSession();
     if (!sessionData.session) {
-      console.log("Ikke logget inn: session mangler i getNote");
+      // console.log("Ikke logget inn: session mangler i getNote");
       return;
     }
     const { data: notesData, error } = await supabase
       .from("notes")
       .select("*")
-      .order("updatedat", { ascending: false });
+      .order("updatedat", { ascending: false })
+      .limit(5);
     if (error) {
       console.error("Error fetching notes:", error);
-      console.log("Supabase error details:", error);
+      // console.log("Supabase error details:", error);
       return;
     }
     setNotes(notesData as Note[]);

@@ -1,7 +1,7 @@
 import { NotesContext } from "@/context/NotesContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
-import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 
 export default function ViewNoteScreen() {
@@ -12,7 +12,7 @@ export default function ViewNoteScreen() {
   const [content, setContent] = useState("");
 
 
-  // finn notatet og fyll felt
+  // find the note and fill fields
   useEffect(() => {
     if (!notesContext || typeof id !== "string") return;
     const note = notesContext.notes.find((n) => n.id === id);
@@ -23,6 +23,7 @@ export default function ViewNoteScreen() {
   }, [id, notesContext?.notes]);
 
 
+  // show loader while notes are being fetched
   if (!notesContext || typeof id !== "string") {
     return (
       <View style={styles.container}>
@@ -31,7 +32,17 @@ export default function ViewNoteScreen() {
     );
   }
 
+  // show loading indicator if notes are still being fetched
+  if (notesContext.notes.length === 0) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text style={styles.headerStyle}>Loading note...</Text>
+      </View>
+    );
+  }
 
+  // find the note again after loading, in case it was not found before
   const note = notesContext.notes.find((n) => n.id === id);
   if (!note) {
     return (
@@ -42,6 +53,7 @@ export default function ViewNoteScreen() {
   }
 
 
+  // function to handle saving the updated note, with validation and feedback
   const save = async () => {
     if (!title.trim() || !content.trim()) {
       Alert.alert("Error", "Both title and content are required.");
@@ -53,6 +65,7 @@ export default function ViewNoteScreen() {
   };
 
 
+  // function to handle deleting the note, with confirmation and feedback
   const deleteNote = () => {
     Alert.alert("Delete note", "Are you sure?", [
       { text: "Cancel", style: "cancel" },

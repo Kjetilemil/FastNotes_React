@@ -59,11 +59,9 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="ViewNoteScreen"
-        // ...existing code...
       />
       <Tabs.Screen
         name="AddNoteScreen"
-        // ...existing code...
       />
     </Tabs>
   );
