@@ -45,11 +45,11 @@ jest.mock('expo-router', () => ({
 
 
 
-
+//--------------------------------------------------------------------------------//
 // Test 1 - unit test - opprettelse & navigasjon
 test('Unit Test - Opprettelse & Navigasjon', async () => {
-  const mockAddNote = jest.fn();
-  const wrapper = ({ children }) => (
+  const mockAddNote = jest.fn();                               
+  const wrapper = ({ children }) => (                           
     <NotesContext.Provider value={{ addNote: mockAddNote }}>
       {children}
     </NotesContext.Provider>
@@ -70,11 +70,13 @@ test('Unit Test - Opprettelse & Navigasjon', async () => {
     expect(mockPush).toHaveBeenCalledWith('/');
   });
 });
+//--------------------------------------------------------------------------------//
 
 
 
 
 
+//--------------------------------------------------------------------------------//
 // Test 2 - integration test - mocking & loader
 test('Integration Test - Mocking & Loader', () => {
   const mockContext = {
@@ -100,10 +102,13 @@ test('Integration Test - Mocking & Loader', () => {
   expect(queryByText('Loading note...')).toBeNull();
   expect(getByText('View Selected Note')).toBeTruthy();
 });
+//--------------------------------------------------------------------------------//
 
 
 
 
+
+//--------------------------------------------------------------------------------//
 // Test 3 - auth guard test for authenticate
 test('Auth Guard Test - Tilgangskontroll', () => {
   const { getByText } = render(<Authenticate />);
@@ -111,7 +116,7 @@ test('Auth Guard Test - Tilgangskontroll', () => {
   expect(getByText('Log In')).toBeTruthy();
   expect(getByText('Sign Up')).toBeTruthy();
 });
-
+//--------------------------------------------------------------------------------//
 
 
 
