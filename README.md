@@ -1,26 +1,21 @@
 FastNotes
 
-This app is created with React Native and is cross-platform.
+This is a simple note app made with React Native.
 
 
-## Ferdig app
+Install Expo CLI:
+Type npm install -g expo-cli in the terminal.
 
-1. Bygg APK/IPA:
-	- Android: `eas build -p android`
-	- iOS: `eas build -p ios`
+Start the app:
+Type expo start in the terminal.
+Follow the instructions that show up.
 
-2. Installer på enhet:
-	- Overfør og installer filen.
-	- Start appen.
+You can open the app on your phone with the Expo Go app
+Scan the QR code that shows up in the terminal.
 
-3. Lever app-fil med innlevering.
+Create a user and start writing notes.
 
-## Krav
-- Node.js og npm må være installert.
-- Expo CLI (`npm install -g expo-cli`) anbefales.
-- EAS CLI (`npm install -g eas-cli`) for bygging.
-- Android Studio eller fysisk Android-enhet for testing.
-- (iOS) Xcode og Apple Developer-konto for iOS-testing.
-
-## Bruk
-Opprett en bruker for å få tilgang til appens funksjoner.
+What you need:
+- Node.js and npm
+- Expo CLI
+- A phone with the Expo Go app

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "166857695374",
+    "project_id": "fastnotes-f5330",
+    "storage_bucket": "fastnotes-f5330.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:166857695374:android:815384fc0aa53d9afc29df",
+        "android_client_info": {
+          "package_name": "com.kjeti.fastnotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-1I8qEekUXxT0BqnsUOSkV6G3tcsJOqg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
